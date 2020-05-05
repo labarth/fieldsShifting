@@ -1,3 +1,4 @@
+const fieldNodes = [document.getElementById('field-f09a4fa2-d45f-46c3-901a-f25f8c30733b')];
 const fieldNode = document.getElementById('field-f09a4fa2-d45f-46c3-901a-f25f8c30733b');
 const block = fieldNode.parentElement.childNodes[0];
 
@@ -65,4 +66,36 @@ const findNearestNodeByCoordinates = (block, field) => {
   return result.length ? getMinRectNode(result) : item;
 };
 
-console.log(findNearestNodeByCoordinates(block, fieldNode));
+// console.log(findNearestNodeByCoordinates(block, fieldNode));
+
+// const el = document.querySelector('.jxJXJH > span');
+// const offset = 3;
+
+const reposField = ({ element, offset, field }) => {
+  const positionElement = document.createElement('span');
+  element.childNodes[0].splitText(offset);
+  element.insertBefore(positionElement, element.childNodes[1]);
+  positionElement.style.position = 'relative';
+
+  const { top: posElTop, left: posElLeft } = positionElement.getBoundingClientRect();
+  const { top: fieldTop, left: fieldLeft } = field.getBoundingClientRect();
+
+  field.style.bottom = 'unset';
+  field.style.right = 'unset';
+  field.style.top = `${fieldTop - posElTop}px`;
+  field.style.left = `${fieldLeft - posElLeft}px`;
+  positionElement.appendChild(field);
+};
+
+
+fieldNodes.forEach((field) => {
+  const alexBaran = {
+    element: document.querySelector('.jxJXJH > span'),
+    offset: 3,
+  };
+
+  if (alexBaran !== null) {
+    reposField({ element: alexBaran.element, offset: alexBaran.offset, field });
+  }
+
+});
