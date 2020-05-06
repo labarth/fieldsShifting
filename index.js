@@ -9,7 +9,7 @@ const hasVerticalIntersection = ({ nodeRect, fieldRect }) => {
 const getDistance = (pointA, pointB) => {
   const x = pointA.x - pointB.x;
   const y = pointA.y - pointB.y;
-  return Math.sqrt(x*x + y*y);  
+  return Math.sqrt(x*x + y*y);
 };
 
 
@@ -30,7 +30,7 @@ const findTextNodeIntersections = ({ blockNode, fieldNode }) => {
         nodes.push(currentNode);
       }
     }
-    currentNode = treeWalker.nextNode(); 
+    currentNode = treeWalker.nextNode();
   }
   nodeRange.detach();
 
@@ -91,10 +91,30 @@ const getNearestTextNodeSymbol = ({ blockNode, fieldNode }) => {
 };
 
 
+const fieldNodes = [document.getElementById('field-f09a4fa2-d45f-46c3-901a-f25f8c30733b')];
 
-const fieldNode = document.getElementById('field-f09a4fa2-d45f-46c3-901a-f25f8c30733b');
-const blockNode = fieldNode.parentElement.childNodes[0];
+const repositionField = ({ element, offset, field }) => {
+  const positionElement = document.createElement('span');
+  element.childNodes[0].splitText(offset);
+  element.insertBefore(positionElement, element.childNodes[1]);
+  positionElement.style.position = 'relative';
+  positionElement.style.fontWeight = 'normal';
+  const { top: posElTop, left: posElLeft } = positionElement.getBoundingClientRect();
+  const { top: fieldTop, left: fieldLeft } = field.getBoundingClientRect();
 
-const min = getNearestTextNodeSymbol({ blockNode, fieldNode });
+  field.style.bottom = 'unset';
+  field.style.right = 'unset';
+  field.style.top = `${fieldTop - posElTop}px`;
+  field.style.left = `${fieldLeft - posElLeft}px`;
+  positionElement.appendChild(field);
+};
 
-console.log(min);
+const moveFields = (fields) => fields.forEach((field) => {
+  const place = getNearestTextNodeSymbol({ blockNode: field.parentElement.childNodes[0] , fieldNode: field });
+
+  if (place !== null) {
+    repositionField({ element: place.node.parentElement, offset: place.offset, field });
+  }
+});
+
+moveFields(fieldNodes);
