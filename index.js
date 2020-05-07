@@ -1,9 +1,16 @@
 const isInside = ({ rect, y }) => {
   return (y >= rect.top) && (y <= rect.bottom);
-}
+};
 
 const hasVerticalIntersection = ({ nodeRect, fieldRect }) => {
-  return isInside({ rect: nodeRect, y: fieldRect.top }) || isInside({ rect: nodeRect, y: fieldRect.bottom });
+  const allCases = [
+    { rect: nodeRect, y: fieldRect.top },
+    { rect: nodeRect, y: fieldRect.bottom },
+    { rect: fieldRect, y: nodeRect.top },
+    { rect: fieldRect, y: nodeRect.bottom },
+  ];
+
+  return allCases.some(isInside);
 };
 
 const getDistance = (pointA, pointB) => {
@@ -11,7 +18,6 @@ const getDistance = (pointA, pointB) => {
   const y = pointA.y - pointB.y;
   return Math.sqrt(x*x + y*y);
 };
-
 
 const findTextNodeIntersections = ({ blockNode, fieldNode }) => {
   const treeWalker = document.createTreeWalker(blockNode, NodeFilter.SHOW_TEXT);
@@ -45,7 +51,7 @@ const getMinDistanceSymbol = ({ textNode, fieldRect }) => {
     offset: -1,
   };
 
-  for (let i = 0; i < textLength - 1; i++) {
+  for (let i = 0; i < textLength; i++) {
     textNodeRange.setStart(textNode, i);
     textNodeRange.setEnd(textNode, i + 1);
 
