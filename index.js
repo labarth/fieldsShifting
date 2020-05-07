@@ -91,7 +91,7 @@ const getNearestTextNodeSymbol = ({ blockNode, fieldNode }) => {
 };
 
 
-const fieldNodes = [document.getElementById('field-f09a4fa2-d45f-46c3-901a-f25f8c30733b')];
+const fieldNodes = Array.prototype.slice.call(document.querySelectorAll('[class*="field_absolute"]'));
 
 const repositionField = ({ element, offset, field }) => {
   const positionElement = document.createElement('span');
@@ -112,9 +112,10 @@ const repositionField = ({ element, offset, field }) => {
 const moveFields = (fields) => fields.forEach((field) => {
   const place = getNearestTextNodeSymbol({ blockNode: field.parentElement.childNodes[0] , fieldNode: field });
 
-  if (place !== null) {
+  if (place !== null && place.node) {
     repositionField({ element: place.node.parentElement, offset: place.offset, field });
   }
+
 });
 
 moveFields(fieldNodes);
