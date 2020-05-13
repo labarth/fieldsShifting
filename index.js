@@ -96,13 +96,12 @@ const getNearestTextNodeSymbol = ({ blockNode, fieldNode }) => {
   return null;
 };
 
-
-const fieldNodes = Array.prototype.slice.call(document.querySelectorAll('[class*="field_absolute"]'));
-
-const repositionField = ({ element, offset, field }) => {
+const repositionField = ({ node, offset, field }) => {
   const positionElement = document.createElement('span');
-  element.childNodes[0].splitText(offset);
-  element.insertBefore(positionElement, element.childNodes[1]);
+
+  const newNode = node.splitText(offset);
+  newNode.parentElement.insertBefore(positionElement, newNode);
+
   positionElement.style.position = 'relative';
   positionElement.style.fontWeight = 'normal';
   const { top: posElTop, left: posElLeft } = positionElement.getBoundingClientRect();
@@ -116,12 +115,13 @@ const repositionField = ({ element, offset, field }) => {
 };
 
 const moveFields = (fields) => fields.forEach((field) => {
-  const place = getNearestTextNodeSymbol({ blockNode: field.parentElement.childNodes[0] , fieldNode: field });
+  const place = getNearestTextNodeSymbol({ blockNode: field.parentElement.childNodes[0], fieldNode: field });
 
   if (place !== null && place.node) {
-    repositionField({ element: place.node.parentElement, offset: place.offset, field });
+    repositionField({ node: place.node, offset: place.offset, field });
   }
-
 });
+
+const fieldNodes = Array.prototype.slice.call(document.querySelectorAll('[class*="field_absolute"]'));
 
 moveFields(fieldNodes);
