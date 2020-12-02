@@ -28,7 +28,10 @@ const findTextNodeIntersections = ({ blockNode, fieldNode }) => {
   const nodeRange = document.createRange();
 
   while(currentNode) {
-    if (currentNode.nodeType === Node.TEXT_NODE) {
+    const isTextNode = currentNode.nodeType === Node.TEXT_NODE;
+    const isInsideField = isTextNode && currentNode.parentNode.closest('[at-field-type]');
+
+    if (isTextNode && !isInsideField) {
       nodeRange.selectNode(currentNode);
       const nodeRect = nodeRange.getBoundingClientRect();
 
@@ -98,12 +101,14 @@ const getNearestTextNodeSymbol = ({ blockNode, fieldNode }) => {
 
 const repositionField = ({ node, offset, field }) => {
   const positionElement = document.createElement('span');
+  positionElement.style.position = 'relative';
+  positionElement.style.fontWeight = 'normal';
+  positionElement.style.display = 'inline-block';
+  positionElement.style.verticalAlign = 'top';
 
   const newNode = node.splitText(offset);
   newNode.parentElement.insertBefore(positionElement, newNode);
 
-  positionElement.style.position = 'relative';
-  positionElement.style.fontWeight = 'normal';
   const { top: posElTop, left: posElLeft } = positionElement.getBoundingClientRect();
   const { top: fieldTop, left: fieldLeft } = field.getBoundingClientRect();
 
