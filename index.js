@@ -29,7 +29,7 @@ const findTextNodeIntersections = ({ blockNode, fieldNode }) => {
 
   while(currentNode) {
     const isTextNode = currentNode.nodeType === Node.TEXT_NODE;
-    const isInsideField = isTextNode && currentNode.parentNode.closest('[at-field-type]');
+    const isInsideField = isTextNode && currentNode.parentNode.closest('[data-at-field-type]');
 
     if (isTextNode && !isInsideField) {
       nodeRange.selectNode(currentNode);
